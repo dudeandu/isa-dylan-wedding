@@ -52,6 +52,68 @@
             overflow-x: auto;
         }
 
+        .admin-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .admin-section h2 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .invite-form {
+            background: #fff;
+            padding: 2rem;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .invite-form label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .invite-form textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font: 0.9rem/1.6 'Montserrat', sans-serif;
+            resize: vertical;
+        }
+
+        .form-help, .form-status {
+            font-size: 0.75rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .form-status { min-height: 1.2rem; }
+        .form-status.success { color: #2e7d32; }
+        .form-status.error { color: #c62828; }
+
+        .btn-black {
+            background: #1a1a1a;
+            color: #fff;
+            border: 0;
+            padding: 12px 24px;
+            font: 0.7rem 'Montserrat', sans-serif;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .btn-black:disabled { opacity: 0.55; cursor: wait; }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -115,7 +177,36 @@
     <h1 class="header-script">Guest List</h1>
     <div class="subtitle">RSVP Responses for Isabel & Dylan</div>
 
-    <div class="table-container">
+    <section class="admin-section">
+        <h2>Add invited guests</h2>
+        <form class="invite-form" id="invite-form">
+            <label for="invite-names">Guest names</label>
+            <textarea id="invite-names" required placeholder="Jane Smith&#10;John Smith&#10;Alex Morgan"></textarea>
+            <p class="form-help">Enter one full name per line. You can paste a whole list at once; names already on the list will be skipped.</p>
+            <button class="btn-black" id="add-invites" type="submit">Add to invitation list</button>
+            <p class="form-status" id="invite-status" role="status" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <section class="admin-section table-container">
+        <h2>Invitation list</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Guest Name</th>
+                    <th>RSVP Status</th>
+                </tr>
+            </thead>
+            <tbody id="invitation-table-body">
+                <tr>
+                    <td colspan="2" class="empty-state">Loading invitation list...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="admin-section table-container">
+        <h2>Responses</h2>
         <table>
             <thead>
                 <tr>
@@ -130,14 +221,14 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </section>
 
     <a href="index.html" class="back-link">Return to Website</a>
 
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
+        import { getDatabase, ref, onValue, get, push, update } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBc1QYGCP32gg55aopGN8FqX3xTWNhm4j4",
@@ -152,11 +243,101 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const rsvpRef = ref(database, 'rsvps');
+        const invitationsRef = ref(database, 'invitations');
+        const normalizeName = (name) => name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+
+        document.getElementById('invite-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const textarea = document.getElementById('invite-names');
+            const status = document.getElementById('invite-status');
+            const button = document.getElementById('add-invites');
+            const submittedNames = textarea.value
+                .split(/\r?\n/)
+                .map(name => name.trim().replace(/\s+/g, ' '))
+                .filter(Boolean);
+            const uniqueNames = [...new Map(submittedNames.map(name => [normalizeName(name), name])).values()];
+
+            if (!uniqueNames.length) {
+                status.textContent = 'Enter at least one guest name.';
+                status.className = 'form-status error';
+                return;
+            }
+
+            button.disabled = true;
+            status.textContent = 'Adding guests…';
+            status.className = 'form-status';
+
+            try {
+                const snapshot = await get(invitationsRef);
+                const existingNames = new Set(
+                    Object.values(snapshot.val() || {}).map(invitation => normalizeName(invitation.name || ''))
+                );
+                const namesToAdd = uniqueNames.filter(name => !existingNames.has(normalizeName(name)));
+                const updates = {};
+
+                namesToAdd.forEach(name => {
+                    const key = push(invitationsRef).key;
+                    updates[`invitations/${key}`] = {
+                        name,
+                        normalizedName: normalizeName(name),
+                        addedAt: new Date().toISOString()
+                    };
+                });
+
+                if (namesToAdd.length) await update(ref(database), updates);
+
+                const skipped = uniqueNames.length - namesToAdd.length;
+                status.textContent = `${namesToAdd.length} ${namesToAdd.length === 1 ? 'guest' : 'guests'} added${skipped ? `; ${skipped} already on the list` : ''}.`;
+                status.className = 'form-status success';
+                textarea.value = '';
+            } catch (error) {
+                console.error('Error adding invitations:', error);
+                status.textContent = 'The guests could not be added. Check Firebase permissions and try again.';
+                status.className = 'form-status error';
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        let latestInvitations = {};
+        let latestRsvps = {};
+
+        function renderInvitations() {
+            const tableBody = document.getElementById('invitation-table-body');
+            const invitations = Object.values(latestInvitations);
+            const responsesByName = new Map(
+                Object.values(latestRsvps).map(rsvp => [normalizeName(rsvp.name || ''), rsvp.attendance || ''])
+            );
+
+            if (!invitations.length) {
+                tableBody.innerHTML = '<tr><td colspan="2" class="empty-state">No invited guests have been added yet.</td></tr>';
+                return;
+            }
+
+            invitations.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            tableBody.innerHTML = '';
+            invitations.forEach(invitation => {
+                const attendance = responsesByName.get(normalizeName(invitation.name || '')) || 'Awaiting response';
+                const statusClass = attendance === 'Joyfully Accepts' ? 'status-accept' :
+                    (attendance === 'Regretfully Declines' ? 'status-decline' : '');
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${escapeHTML(invitation.name)}</td><td class="${statusClass}">${escapeHTML(attendance)}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        onValue(invitationsRef, snapshot => {
+            latestInvitations = snapshot.val() || {};
+            renderInvitations();
+        });
 
         // onValue sets up a real-time listener so the table updates automatically 
         // whenever a new RSVP is submitted on the main site
         onValue(rsvpRef, (snapshot) => {
             const data = snapshot.val();
+            latestRsvps = data || {};
+            renderInvitations();
             const tableBody = document.getElementById('rsvp-table-body');
             
             tableBody.innerHTML = ''; // Clear the loading text or previous entries
