@@ -1,0 +1,61 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "invitations": {
+      ".read": true,
+      "$invitationId": {
+        ".write": "newData.exists()",
+        ".validate": "newData.hasChildren(['name', 'normalizedName', 'partySize', 'addedAt'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
+        },
+        "normalizedName": {
+          ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
+        },
+        "partySize": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 20"
+        },
+        "addedAt": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "rsvps": {
+      ".read": true,
+      "$rsvpId": {
+        ".write": "newData.exists()",
+        ".validate": "newData.hasChildren(['name', 'partySize', 'guests', 'timestamp']) && newData.child('guests').numChildren() === newData.child('partySize').val()",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
+        },
+        "partySize": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 20"
+        },
+        "guests": {
+          "$guestIndex": {
+            ".validate": "newData.hasChildren(['name', 'attendance'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
+            },
+            "attendance": {
+              ".validate": "newData.val() === 'Joyfully Accepts' || newData.val() === 'Regretfully Declines'"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "timestamp": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

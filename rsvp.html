@@ -58,6 +58,66 @@
             margin-bottom: 2rem;
         }
 
+        .admin-tabs {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #cfcfcf;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            background: transparent;
+            color: #777;
+            font: 0.75rem 'Montserrat', sans-serif;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            color: #1a1a1a;
+            border-bottom-color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .tab-panel {
+            display: none;
+            width: 100%;
+            max-width: 864px;
+        }
+
+        .tab-panel.active { display: block; }
+        .tab-panel .admin-section { margin-left: auto; margin-right: auto; }
+
+        .search-box {
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: #fff;
+            border: 1px solid #eaeaea;
+        }
+
+        .search-box label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font: 0.9rem 'Montserrat', sans-serif;
+        }
+
         .admin-section h2 {
             margin: 0 0 1rem;
             font-size: 1rem;
@@ -149,6 +209,27 @@
             font-weight: 500;
         }
 
+        .response-totals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .total-card {
+            padding: 1.25rem;
+            background: #fff;
+            border: 1px solid #eaeaea;
+            text-align: center;
+        }
+
+        .total-number { display: block; font-size: 2rem; }
+        .total-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+        .group-name { font-weight: 600; }
+        .group-members { margin-top: 0.4rem; color: #666; font-size: 0.78rem; line-height: 1.6; }
+
         .empty-state {
             text-align: center;
             font-style: italic;
@@ -170,6 +251,12 @@
             color: #666;
             border-bottom-color: #666;
         }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .invite-form, .table-container { padding: 1rem; }
+            .response-totals { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -177,51 +264,54 @@
     <h1 class="header-script">Guest List</h1>
     <div class="subtitle">RSVP Responses for Isabel & Dylan</div>
 
-    <section class="admin-section">
-        <h2>Add invited guests</h2>
-        <form class="invite-form" id="invite-form">
-            <label for="invite-names">Guest names</label>
-            <textarea id="invite-names" required placeholder="Jane Smith&#10;John Smith&#10;Alex Morgan"></textarea>
-            <p class="form-help">Enter one full name per line. You can paste a whole list at once; names already on the list will be skipped.</p>
-            <button class="btn-black" id="add-invites" type="submit">Add to invitation list</button>
-            <p class="form-status" id="invite-status" role="status" aria-live="polite"></p>
-        </form>
-    </section>
+    <div class="response-totals" aria-label="Response totals">
+        <div class="total-card"><span class="total-number status-accept" id="yes-total">0</span><span class="total-label">Attending</span></div>
+        <div class="total-card"><span class="total-number status-decline" id="no-total">0</span><span class="total-label">Declined</span></div>
+        <div class="total-card"><span class="total-number" id="awaiting-total">0</span><span class="total-label">Awaiting</span></div>
+    </div>
 
-    <section class="admin-section table-container">
-        <h2>Invitation list</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Guest Name</th>
-                    <th>RSVP Status</th>
-                </tr>
-            </thead>
-            <tbody id="invitation-table-body">
-                <tr>
-                    <td colspan="2" class="empty-state">Loading invitation list...</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+    <div class="admin-tabs" role="tablist" aria-label="Guest list sections">
+        <button class="tab-button active" id="invitations-tab" role="tab" aria-selected="true" aria-controls="invitations-panel">Invitations</button>
+        <button class="tab-button" id="responses-tab" role="tab" aria-selected="false" aria-controls="responses-panel">Responses</button>
+    </div>
 
-    <section class="admin-section table-container">
-        <h2>Responses</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Guest Name</th>
-                    <th>Status</th>
-                    <th>Date Submitted</th>
-                </tr>
-            </thead>
-            <tbody id="rsvp-table-body">
-                <tr>
-                    <td colspan="3" class="empty-state">Loading responses...</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+    <div class="tab-panel active" id="invitations-panel" role="tabpanel" aria-labelledby="invitations-tab">
+        <section class="admin-section">
+            <h2>Add invited guests</h2>
+            <form class="invite-form" id="invite-form">
+                <label for="invite-names">Guest names</label>
+                <textarea id="invite-names" required placeholder="Jane Smith, 2&#10;John Brown, 1&#10;Alex Morgan, 4"></textarea>
+                <p class="form-help">Enter one invitation per line as “lookup name, number of people”. Example: Jane Smith, 3. Existing names are skipped to prevent duplicates.</p>
+                <button class="btn-black" id="add-invites" type="submit">Add to invitation list</button>
+                <p class="form-status" id="invite-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="admin-section table-container">
+            <h2>Invitation list</h2>
+            <table>
+                <thead><tr><th>Guest Name</th><th>Party Size</th><th>RSVP Status</th></tr></thead>
+                <tbody id="invitation-table-body"><tr><td colspan="3" class="empty-state">Loading invitation list...</td></tr></tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="tab-panel" id="responses-panel" role="tabpanel" aria-labelledby="responses-tab" hidden>
+        <section class="admin-section">
+            <div class="search-box">
+                <label for="response-search">Find a guest’s response</label>
+                <input type="search" id="response-search" placeholder="Search by invitation or guest name" autocomplete="off">
+                <p class="form-status" id="search-status" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+        <section class="admin-section table-container">
+            <h2>Responses</h2>
+            <table>
+                <thead><tr><th>Guest Name</th><th>Status</th><th>Date Submitted</th></tr></thead>
+                <tbody id="rsvp-table-body"><tr><td colspan="3" class="empty-state">Loading responses...</td></tr></tbody>
+            </table>
+        </section>
+    </div>
 
     <a href="index.html" class="back-link">Return to Website</a>
 
@@ -246,20 +336,48 @@
         const invitationsRef = ref(database, 'invitations');
         const normalizeName = (name) => name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
 
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(tab => {
+                    const selected = tab === button;
+                    tab.classList.toggle('active', selected);
+                    tab.setAttribute('aria-selected', String(selected));
+                });
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    const selected = panel.id === button.getAttribute('aria-controls');
+                    panel.classList.toggle('active', selected);
+                    panel.hidden = !selected;
+                });
+                if (button.id === 'responses-tab') document.getElementById('response-search').focus();
+            });
+        });
+
         document.getElementById('invite-form').addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const textarea = document.getElementById('invite-names');
             const status = document.getElementById('invite-status');
             const button = document.getElementById('add-invites');
-            const submittedNames = textarea.value
+            const submittedInvitations = textarea.value
                 .split(/\r?\n/)
-                .map(name => name.trim().replace(/\s+/g, ' '))
+                .map(line => {
+                    const match = line.trim().match(/^(.*?),\s*(\d+)$/);
+                    return match ? { name: match[1].trim().replace(/\s+/g, ' '), partySize: Number(match[2]) } : null;
+                })
                 .filter(Boolean);
-            const uniqueNames = [...new Map(submittedNames.map(name => [normalizeName(name), name])).values()];
+            const validInvitations = submittedInvitations.filter(invitation => invitation.name && invitation.partySize >= 1 && invitation.partySize <= 20);
+            const uniqueInvitations = [...new Map(validInvitations.map(invitation => [normalizeName(invitation.name), invitation])).values()];
+            const submittedNameCounts = validInvitations.reduce((counts, invitation) => {
+                const normalized = normalizeName(invitation.name);
+                counts.set(normalized, (counts.get(normalized) || 0) + 1);
+                return counts;
+            }, new Map());
+            const repeatedInBatch = uniqueInvitations
+                .filter(invitation => submittedNameCounts.get(normalizeName(invitation.name)) > 1)
+                .map(invitation => invitation.name);
 
-            if (!uniqueNames.length) {
-                status.textContent = 'Enter at least one guest name.';
+            if (!uniqueInvitations.length || validInvitations.length !== textarea.value.split(/\r?\n/).filter(line => line.trim()).length) {
+                status.textContent = 'Use one line per invitation in the format “Full Name, number”, with a party size from 1 to 20.';
                 status.className = 'form-status error';
                 return;
             }
@@ -270,27 +388,32 @@
 
             try {
                 const snapshot = await get(invitationsRef);
-                const existingNames = new Set(
-                    Object.values(snapshot.val() || {}).map(invitation => normalizeName(invitation.name || ''))
-                );
-                const namesToAdd = uniqueNames.filter(name => !existingNames.has(normalizeName(name)));
+                const existingEntries = Object.entries(snapshot.val() || {});
+                const existingByName = new Map(existingEntries.map(([key, invitation]) => [normalizeName(invitation.name || ''), { key, invitation }]));
                 const updates = {};
+                const duplicates = [...repeatedInBatch];
 
-                namesToAdd.forEach(name => {
+                uniqueInvitations.forEach(invitation => {
+                    const existing = existingByName.get(normalizeName(invitation.name));
+                    if (existing) {
+                        duplicates.push(existing.invitation.name);
+                        return;
+                    }
                     const key = push(invitationsRef).key;
                     updates[`invitations/${key}`] = {
-                        name,
-                        normalizedName: normalizeName(name),
+                        name: invitation.name,
+                        normalizedName: normalizeName(invitation.name),
+                        partySize: invitation.partySize,
                         addedAt: new Date().toISOString()
                     };
                 });
 
-                if (namesToAdd.length) await update(ref(database), updates);
+                const added = Object.keys(updates).length;
+                if (added) await update(ref(database), updates);
 
-                const skipped = uniqueNames.length - namesToAdd.length;
-                status.textContent = `${namesToAdd.length} ${namesToAdd.length === 1 ? 'guest' : 'guests'} added${skipped ? `; ${skipped} already on the list` : ''}.`;
-                status.className = 'form-status success';
-                textarea.value = '';
+                status.textContent = `${added} ${added === 1 ? 'invitation' : 'invitations'} added.${duplicates.length ? ` Duplicate entries skipped: ${[...new Set(duplicates)].join(', ')}.` : ''}`;
+                status.className = `form-status ${added ? 'success' : 'error'}`;
+                if (added) textarea.value = '';
             } catch (error) {
                 console.error('Error adding invitations:', error);
                 status.textContent = 'The guests could not be added. Check Firebase permissions and try again.';
@@ -306,25 +429,45 @@
         function renderInvitations() {
             const tableBody = document.getElementById('invitation-table-body');
             const invitations = Object.values(latestInvitations);
-            const responsesByName = new Map(
-                Object.values(latestRsvps).map(rsvp => [normalizeName(rsvp.name || ''), rsvp.attendance || ''])
-            );
+            const responsesByName = new Map(Object.values(latestRsvps).map(rsvp => [normalizeName(rsvp.name || ''), rsvp]));
 
             if (!invitations.length) {
-                tableBody.innerHTML = '<tr><td colspan="2" class="empty-state">No invited guests have been added yet.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="3" class="empty-state">No invited guests have been added yet.</td></tr>';
+                renderTotals();
                 return;
             }
 
             invitations.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
             tableBody.innerHTML = '';
             invitations.forEach(invitation => {
-                const attendance = responsesByName.get(normalizeName(invitation.name || '')) || 'Awaiting response';
-                const statusClass = attendance === 'Joyfully Accepts' ? 'status-accept' :
-                    (attendance === 'Regretfully Declines' ? 'status-decline' : '');
+                const rsvp = responsesByName.get(normalizeName(invitation.name || ''));
+                const guests = getRsvpGuests(rsvp);
+                const yesCount = guests.filter(guest => guest.attendance === 'Joyfully Accepts').length;
+                const noCount = guests.filter(guest => guest.attendance === 'Regretfully Declines').length;
+                const statusText = rsvp ? `${yesCount} attending, ${noCount} declined` : 'Awaiting response';
+                const members = guests.map(guest => `${escapeHTML(guest.name)} — ${escapeHTML(guest.attendance)}`).join('<br>');
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${escapeHTML(invitation.name)}</td><td class="${statusClass}">${escapeHTML(attendance)}</td>`;
+                row.innerHTML = `<td><span class="group-name">${escapeHTML(invitation.name)}</span>${members ? `<div class="group-members">${members}</div>` : ''}</td><td>${Number(invitation.partySize) || 1}</td><td>${escapeHTML(statusText)}</td>`;
                 tableBody.appendChild(row);
             });
+            renderTotals();
+        }
+
+        function getRsvpGuests(rsvp) {
+            if (!rsvp) return [];
+            return Array.isArray(rsvp.guests) ? rsvp.guests : [{ name: rsvp.name || '', attendance: rsvp.attendance || '' }];
+        }
+
+        function renderTotals() {
+            const invitations = Object.values(latestInvitations);
+            const responses = Object.values(latestRsvps);
+            const guests = responses.flatMap(getRsvpGuests);
+            const yes = guests.filter(guest => guest.attendance === 'Joyfully Accepts').length;
+            const no = guests.filter(guest => guest.attendance === 'Regretfully Declines').length;
+            const invited = invitations.reduce((total, invitation) => total + (Number(invitation.partySize) || 1), 0);
+            document.getElementById('yes-total').textContent = yes;
+            document.getElementById('no-total').textContent = no;
+            document.getElementById('awaiting-total').textContent = Math.max(0, invited - yes - no);
         }
 
         onValue(invitationsRef, snapshot => {
@@ -363,12 +506,16 @@
                     });
 
                     // Add CSS class based on attendance for slight color coding
-                    const statusClass = rsvp.attendance === 'Joyfully Accepts' ? 'status-accept' : 
-                                        (rsvp.attendance === 'Regretfully Declines' ? 'status-decline' : '');
+                    const guests = getRsvpGuests(rsvp);
+                    const yesCount = guests.filter(guest => guest.attendance === 'Joyfully Accepts').length;
+                    const noCount = guests.filter(guest => guest.attendance === 'Regretfully Declines').length;
+                    const memberNames = guests.map(guest => escapeHTML(guest.name)).join(', ');
+                    const searchableNames = [rsvp.name, ...guests.map(guest => guest.name)].filter(Boolean).join(' ');
 
+                    row.dataset.search = normalizeName(searchableNames);
                     row.innerHTML = `
-                        <td>${escapeHTML(rsvp.name)}</td>
-                        <td class="${statusClass}">${escapeHTML(rsvp.attendance)}</td>
+                        <td><span class="group-name">${escapeHTML(rsvp.name)}</span>${memberNames ? `<div class="group-members">${memberNames}</div>` : ''}</td>
+                        <td>${yesCount} attending, ${noCount} declined</td>
                         <td>${formattedDate}</td>
                     `;
                     tableBody.appendChild(row);
@@ -380,7 +527,24 @@
                     </tr>
                 `;
             }
+            filterResponses();
         });
+
+        document.getElementById('response-search').addEventListener('input', filterResponses);
+
+        function filterResponses() {
+            const query = normalizeName(document.getElementById('response-search').value || '');
+            const rows = [...document.querySelectorAll('#rsvp-table-body tr[data-search]')];
+            let visible = 0;
+            rows.forEach(row => {
+                const matches = !query || row.dataset.search.includes(query);
+                row.hidden = !matches;
+                if (matches) visible += 1;
+            });
+            const status = document.getElementById('search-status');
+            status.textContent = query ? `${visible} ${visible === 1 ? 'response' : 'responses'} found.` : '';
+            status.className = `form-status ${query && !visible ? 'error' : ''}`;
+        }
 
         // Basic HTML escaping function to prevent XSS if guests enter weird characters
         function escapeHTML(str) {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos - Isabel & Dylan</title>
+    <link rel="stylesheet" href="./styles/normalize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 2rem 0 4rem; background: #faf9f6; color: #1a1a1a; font-family: 'Montserrat', sans-serif; text-align: center; }
+        .header-script { margin: 1rem 0 0; color: #333; font-family: 'Great Vibes', cursive; font-size: 4rem; font-weight: 400; }
+        .subtitle { margin: 0.5rem 0 2rem; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+        nav ul { display: flex; justify-content: center; gap: 2rem; margin: 0 1rem 3rem; padding: 0; list-style: none; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+        nav a { color: #666; text-decoration: none; padding-bottom: 2px; }
+        nav a.active, nav a:hover { color: #000; border-bottom: 1px solid #000; }
+        .photo-collage { width: min(1040px, calc(100% - 3rem)); margin: auto; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 250px 310px; gap: 12px; }
+        figure { margin: 0; overflow: hidden; background: #eee9e1; }
+        figure img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 0.7s ease; }
+        figure:hover img { transform: scale(1.025); }
+        .portrait { grid-column: 1 / span 5; grid-row: 1 / span 2; }
+        .wide { grid-column: 6 / span 7; grid-row: 1; }
+        .wide img { object-position: center 38%; }
+        .polaroid-one { grid-column: 6 / span 3; grid-row: 2; }
+        .polaroid-two { grid-column: 9 / span 2; grid-row: 2; }
+        .polaroid-three { grid-column: 11 / span 2; grid-row: 2; }
+        .caption { margin: 1.3rem auto 0; color: #777; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; }
+        @media (max-width: 520px) {
+            body { padding-top: 1rem; }
+            .header-script { font-size: 3.4rem; }
+            nav ul { gap: 1.5rem; margin-bottom: 2rem; }
+            .photo-collage { width: calc(100% - 2rem); grid-template-columns: repeat(2, 1fr); grid-template-rows: 330px 180px 220px; gap: 8px; }
+            .portrait { grid-column: 1 / -1; grid-row: 1; }
+            .wide { grid-column: 1 / -1; grid-row: 2; }
+            .polaroid-one { grid-column: 1; grid-row: 3; }
+            .polaroid-two { grid-column: 2; grid-row: 3; }
+            .polaroid-three { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="header-script">Our photos</h1>
+    <p class="subtitle">Isabel + Dylan</p>
+    <nav><ul><li><a href="index.html">Home</a></li><li><a href="photos.html" class="active">Photos</a></li><li><a href="index.html#rsvp">RSVP</a></li></ul></nav>
+    <main class="photo-collage" aria-label="Photos of Isabel and Dylan">
+        <figure class="portrait"><img src="./images/WhatsApp Image 2026-08-04 at 19.22.37.jpeg" alt="Isabel and Dylan smiling together"></figure>
+        <figure class="wide"><img src="./images/isaDylanCR.jpeg" alt="A close-up portrait of Isabel and Dylan"></figure>
+        <figure class="polaroid-one"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.01.jpeg" alt="Two instant photos of Isabel and Dylan"></figure>
+        <figure class="polaroid-two"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.00.jpeg" alt="An instant photo of Isabel and Dylan"></figure>
+        <figure class="polaroid-three"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.02.jpeg" alt="A second instant photo of Isabel and Dylan"></figure>
+    </main>
+    <p class="caption">A few moments along the way</p>
+</body>
+</html>

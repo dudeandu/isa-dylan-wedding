@@ -189,6 +189,23 @@
         #responseFields { display: none; }
         #responseFields.active { display: block; }
 
+        .party-member {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #e3e3e3;
+            text-align: left;
+        }
+
+        .party-member-title {
+            margin: 0 0 0.8rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .party-member .form-group:last-child { margin-bottom: 0; }
+
         footer {
             margin: 4rem 0 2rem;
             font-size: 0.7rem;
@@ -224,7 +241,7 @@
     
     <h2 class="couple-names">ISABEL + DYLAN</h2>
     <div class="sub-details">
-        SATURDAY, OCTOBER 17, 2026 • BALTIMORE, MD<br>
+        SATURDAY, OCTOBER 17, 2026 • MILTON, ON<br>
         <span id="countdown">COUNTING DOWN TO THE BIG DAY</span>
     </div>
 
@@ -232,7 +249,7 @@
         <ul>
             <li><a href="#" class="active">Home</a></li>
             <!-- <li><a href="#">Registry</a></li> -->
-            <li><a href="#">Photos</a></li>
+            <li><a href="photos.html">Photos</a></li>
             <li><a href="#">Q + A</a></li>
             <li><a href="#">Travel</a></li>
             <li><a href="#">Dress Code</a></li>
@@ -240,7 +257,6 @@
         </ul>
     </nav>
 
-    <!-- Using the specified image path -->
     <img src="./images/isaDylanCR.jpeg" alt="Isabel and Dylan" class="hero-image">
 
     <div class="date-location-container">
@@ -268,14 +284,7 @@
                 </div>
                 <div id="lookupStatus" class="form-status" role="status" aria-live="polite"></div>
                 <div id="responseFields">
-                    <div class="form-group">
-                        <label for="attendance">Will you be attending?</label>
-                        <select id="attendance">
-                            <option value="">Please select...</option>
-                            <option value="Joyfully Accepts">Joyfully Accepts</option>
-                            <option value="Regretfully Declines">Regretfully Declines</option>
-                        </select>
-                    </div>
+                    <div id="partyMembers"></div>
                     <button type="submit" class="btn-black" id="submitRsvp" style="width: 100%;">Submit RSVP</button>
                 </div>
             </form>
@@ -295,7 +304,7 @@
         // Import Firebase App module
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
         // Import Realtime Database functions
-        import { getDatabase, ref, push, get, update } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
+        import { getDatabase, ref, push, get, set } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBc1QYGCP32gg55aopGN8FqX3xTWNhm4j4",
@@ -314,10 +323,46 @@
 
         const normalizeName = (name) => name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
         const guestNameInput = document.getElementById('guestName');
-        const attendanceSelect = document.getElementById('attendance');
+        const partyMembersContainer = document.getElementById('partyMembers');
         const responseFields = document.getElementById('responseFields');
         const lookupStatus = document.getElementById('lookupStatus');
         const submitButton = document.getElementById('submitRsvp');
+        let activeInvitation = null;
+
+        function renderPartyFields(invitation, existingRsvp) {
+            const partySize = Math.max(1, Math.min(20, Number(invitation.partySize) || 1));
+            const existingGuests = Array.isArray(existingRsvp?.guests)
+                ? existingRsvp.guests
+                : (existingRsvp ? [{ name: existingRsvp.name || invitation.name, attendance: existingRsvp.attendance || '' }] : []);
+
+            partyMembersContainer.innerHTML = '';
+            for (let index = 0; index < partySize; index += 1) {
+                const guest = existingGuests[index] || {};
+                const member = document.createElement('div');
+                member.className = 'party-member';
+                member.innerHTML = `
+                    <p class="party-member-title">Guest ${index + 1} of ${partySize}</p>
+                    <div class="form-group">
+                        <label for="member-name-${index}">Full name</label>
+                        <input id="member-name-${index}" class="member-name" type="text" required maxlength="100" value="${escapeAttribute(guest.name || (index === 0 ? invitation.name : ''))}">
+                    </div>
+                    <div class="form-group">
+                        <label for="member-attendance-${index}">Will this guest be attending?</label>
+                        <select id="member-attendance-${index}" class="member-attendance" required>
+                            <option value="">Please select...</option>
+                            <option value="Joyfully Accepts" ${guest.attendance === 'Joyfully Accepts' ? 'selected' : ''}>Joyfully Accepts</option>
+                            <option value="Regretfully Declines" ${guest.attendance === 'Regretfully Declines' ? 'selected' : ''}>Regretfully Declines</option>
+                        </select>
+                    </div>`;
+                partyMembersContainer.appendChild(member);
+            }
+        }
+
+        function escapeAttribute(value) {
+            return String(value).replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[character]));
+        }
 
         const weddingDate = new Date('2026-10-17T00:00:00-04:00');
         const daysToGo = Math.max(0, Math.ceil((weddingDate - new Date()) / 86400000));
@@ -353,10 +398,10 @@
 
                 if (!invitation) {
                     existingRsvpKey = null;
+                    activeInvitation = null;
                     lookupStatus.textContent = `We couldn't find ${name} on the invitation list. Please check the spelling or contact Isabel and Dylan.`;
                     lookupStatus.className = 'form-status error';
                     responseFields.classList.remove('active');
-                    attendanceSelect.required = false;
                     return;
                 }
 
@@ -364,14 +409,14 @@
                 const match = entries.find(([, rsvp]) => normalizeName(rsvp.name || '') === normalizeName(name));
 
                 existingRsvpKey = match ? match[0] : null;
-                attendanceSelect.value = match ? (match[1].attendance || '') : '';
+                activeInvitation = invitation;
+                renderPartyFields(invitation, match ? match[1] : null);
                 lookupStatus.textContent = match
                     ? `Welcome back, ${match[1].name}. You can update your response below.`
                     : `Welcome, ${invitation.name}. Please add your response below.`;
                 lookupStatus.className = 'form-status success';
                 submitButton.textContent = match ? 'Update RSVP' : 'Submit RSVP';
                 responseFields.classList.add('active');
-                attendanceSelect.required = true;
             } catch (error) {
                 console.error('Error finding RSVP: ', error);
                 lookupStatus.textContent = 'We could not search the guest list. Please try again.';
@@ -388,8 +433,9 @@
         });
         guestNameInput.addEventListener('input', () => {
             existingRsvpKey = null;
+            activeInvitation = null;
             responseFields.classList.remove('active');
-            attendanceSelect.required = false;
+            partyMembersContainer.innerHTML = '';
             lookupStatus.textContent = '';
         });
 
@@ -397,25 +443,30 @@
         document.getElementById('rsvpForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const name = guestNameInput.value.trim().replace(/\s+/g, ' ');
-            const attendance = attendanceSelect.value;
+            if (!activeInvitation) return;
+            const guests = [...document.querySelectorAll('.party-member')].map(member => ({
+                name: member.querySelector('.member-name').value.trim().replace(/\s+/g, ' '),
+                attendance: member.querySelector('.member-attendance').value
+            }));
             
             // Update an existing response in place, or create one for a first-time guest.
             const rsvpData = {
-                name: name,
-                attendance: attendance,
+                name: activeInvitation.name,
+                partySize: guests.length,
+                guests,
                 timestamp: new Date().toISOString()
             };
             const saveRsvp = existingRsvpKey
-                ? update(ref(database, `rsvps/${existingRsvpKey}`), rsvpData)
+                ? set(ref(database, `rsvps/${existingRsvpKey}`), rsvpData)
                 : push(ref(database, 'rsvps'), rsvpData);
 
             saveRsvp.then(() => {
                 alert(existingRsvpKey ? 'Your RSVP has been updated.' : 'Thank you! Your RSVP has been submitted successfully.');
                 document.getElementById('rsvpForm').reset();
                 existingRsvpKey = null;
+                activeInvitation = null;
                 responseFields.classList.remove('active');
-                attendanceSelect.required = false;
+                partyMembersContainer.innerHTML = '';
                 lookupStatus.textContent = '';
                 document.getElementById('rsvpFormWrapper').classList.remove('active');
             }).catch((error) => {
