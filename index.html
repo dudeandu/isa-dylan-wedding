@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isabel & Dylan's Wedding</title>
+
+    <!-- Link to local normalize CSS -->
+    <link rel="stylesheet" href="./styles/normalize.css">
+
+    <!-- Web Fonts to match the aesthetic of your example design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base styles mimicking the provided minimalist design */
+        body {
+            background-color: #faf9f6; /* Soft off-white/cream */
+            color: #1a1a1a;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-script {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            font-weight: 400;
+            margin: 3rem 0 1rem;
+            color: #333;
+        }
+
+        .couple-names {
+            font-size: 2.2rem;
+            letter-spacing: 0.15em;
+            font-weight: 400;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .sub-details {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            margin: 1rem 0 2rem;
+            line-height: 1.8;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            flex-wrap: wrap;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #666;
+            padding-bottom: 2px;
+            transition: color 0.2s ease;
+        }
+
+        nav a.active, nav a:hover {
+            color: #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .date-location-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 3rem auto;
+            max-width: 500px;
+        }
+
+        .date-location-col {
+            flex: 1;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        .divider {
+            width: 1px;
+            height: 60px;
+            background-color: #000;
+            margin: 0 1rem;
+        }
+
+        .rsvp-container {
+            margin: 2rem auto 4rem;
+            max-width: 400px;
+        }
+
+        .btn-black {
+            background-color: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-black:hover {
+            background-color: #333;
+        }
+
+        /* Hidden by default, toggles open via JS */
+        .rsvp-form-wrapper {
+            display: none;
+            margin-top: 2rem;
+            background: #fff;
+            padding: 2rem;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .rsvp-form-wrapper.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        .form-help, .form-status {
+            font-size: 0.72rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .form-status {
+            min-height: 1.2rem;
+            margin: 0.8rem 0;
+        }
+
+        .form-status.error { color: #a33; }
+        .form-status.success { color: #2e6b3e; }
+
+        .lookup-row {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .lookup-row input { flex: 1; }
+        .lookup-row .btn-black { padding: 10px 16px; }
+
+        #responseFields { display: none; }
+        #responseFields.active { display: block; }
+
+        footer {
+            margin: 4rem 0 2rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .admin-link {
+            display: block;
+            margin-top: 3rem;
+            font-size: 0.7rem;
+            color: #b0b0b0;
+            text-decoration: underline;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        @media (max-width: 520px) {
+            .header-script { font-size: 3.5rem; }
+            .couple-names { font-size: 1.7rem; }
+            nav ul { gap: 1rem 1.3rem; }
+            .rsvp-container { margin-left: 1rem; margin-right: 1rem; }
+            .rsvp-form-wrapper { padding: 1.25rem; }
+            .lookup-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="header-script">Our wedding day</h1>
+    
+    <h2 class="couple-names">ISABEL + DYLAN</h2>
+    <div class="sub-details">
+        SATURDAY, OCTOBER 17, 2026 • BALTIMORE, MD<br>
+        <span id="countdown">COUNTING DOWN TO THE BIG DAY</span>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">Registry</a></li>
+            <li><a href="#">Photos</a></li>
+            <li><a href="#">Q + A</a></li>
+            <li><a href="#">Travel</a></li>
+            <li><a href="#">Dress Code</a></li>
+            <li><a href="#rsvp" onclick="toggleRSVP(event)">RSVP</a></li>
+        </ul>
+    </nav>
+
+    <!-- Using the specified image path -->
+    <img src="./images/isaDylanCR.jpeg" alt="Isabel and Dylan" class="hero-image">
+
+    <div class="date-location-container">
+        <div class="date-location-col">
+            OCTOBER<br>17, 2026
+        </div>
+        <div class="divider"></div>
+        <div class="date-location-col">
+            BALTIMORE<br>MD
+        </div>
+    </div>
+
+    <div class="rsvp-container" id="rsvp">
+        <button class="btn-black" onclick="toggleRSVP(event)">RSVP</button>
+        
+        <div class="rsvp-form-wrapper" id="rsvpFormWrapper">
+            <form id="rsvpForm">
+                <div class="form-group">
+                    <label for="guestName">Find your invitation</label>
+                    <div class="lookup-row">
+                        <input type="text" id="guestName" required placeholder="Enter your full name" autocomplete="name">
+                        <button type="button" class="btn-black" id="findRsvp">Find</button>
+                    </div>
+                    <p class="form-help">Enter the same name used on your invitation. You can return here to update your response.</p>
+                </div>
+                <div id="lookupStatus" class="form-status" role="status" aria-live="polite"></div>
+                <div id="responseFields">
+                    <div class="form-group">
+                        <label for="attendance">Will you be attending?</label>
+                        <select id="attendance">
+                            <option value="">Please select...</option>
+                            <option value="Joyfully Accepts">Joyfully Accepts</option>
+                            <option value="Regretfully Declines">Regretfully Declines</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-black" id="submitRsvp" style="width: 100%;">Submit RSVP</button>
+                </div>
+            </form>
+            <p class="form-help">Kindly RSVP by September 1, 2026.</p>
+        </div>
+    </div>
+
+    <footer>
+        WEDDING DAY<br>
+        SATURDAY, OCTOBER 17, 2026
+        <!-- Link to the HTML file displaying responses -->
+        <a href="rsvp.html" class="admin-link">View RSVP Responses</a>
+    </footer>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import Firebase App module
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+        // Import Realtime Database functions
+        import { getDatabase, ref, push, get, update } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBc1QYGCP32gg55aopGN8FqX3xTWNhm4j4",
+            authDomain: "june-suprise.firebaseapp.com",
+            databaseURL: "https://june-suprise-default-rtdb.firebaseio.com",
+            projectId: "june-suprise",
+            storageBucket: "june-suprise.firebasestorage.app",
+            messagingSenderId: "954185591739",
+            appId: "1:954185591739:web:80a35c00ce0254c77c729e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        let existingRsvpKey = null;
+
+        const normalizeName = (name) => name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+        const guestNameInput = document.getElementById('guestName');
+        const attendanceSelect = document.getElementById('attendance');
+        const responseFields = document.getElementById('responseFields');
+        const lookupStatus = document.getElementById('lookupStatus');
+        const submitButton = document.getElementById('submitRsvp');
+
+        const weddingDate = new Date('2026-10-17T00:00:00-04:00');
+        const daysToGo = Math.max(0, Math.ceil((weddingDate - new Date()) / 86400000));
+        document.getElementById('countdown').textContent = daysToGo === 0 ? 'TODAY IS THE DAY!' : `${daysToGo} DAYS TO GO!`;
+
+        // Expose RSVP toggle function to window so HTML buttons can trigger it
+        window.toggleRSVP = function(e) {
+            if (e) e.preventDefault();
+            const wrapper = document.getElementById('rsvpFormWrapper');
+            wrapper.classList.toggle('active');
+        };
+
+        async function findRsvp() {
+            const name = guestNameInput.value.trim().replace(/\s+/g, ' ');
+            if (!name) {
+                lookupStatus.textContent = 'Please enter your full name.';
+                lookupStatus.className = 'form-status error';
+                responseFields.classList.remove('active');
+                return;
+            }
+
+            lookupStatus.textContent = 'Searching…';
+            lookupStatus.className = 'form-status';
+            responseFields.classList.remove('active');
+
+            try {
+                const snapshot = await get(ref(database, 'rsvps'));
+                const entries = snapshot.exists() ? Object.entries(snapshot.val()) : [];
+                const match = entries.find(([, rsvp]) => normalizeName(rsvp.name || '') === normalizeName(name));
+
+                existingRsvpKey = match ? match[0] : null;
+                attendanceSelect.value = match ? (match[1].attendance || '') : '';
+                lookupStatus.textContent = match
+                    ? `Welcome back, ${match[1].name}. You can update your response below.`
+                    : `We don't have a response for ${name} yet. Please add yours below.`;
+                lookupStatus.className = `form-status ${match ? 'success' : ''}`;
+                submitButton.textContent = match ? 'Update RSVP' : 'Submit RSVP';
+                responseFields.classList.add('active');
+                attendanceSelect.required = true;
+            } catch (error) {
+                console.error('Error finding RSVP: ', error);
+                lookupStatus.textContent = 'We could not search the guest list. Please try again.';
+                lookupStatus.className = 'form-status error';
+            }
+        }
+
+        document.getElementById('findRsvp').addEventListener('click', findRsvp);
+        guestNameInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                findRsvp();
+            }
+        });
+        guestNameInput.addEventListener('input', () => {
+            existingRsvpKey = null;
+            responseFields.classList.remove('active');
+            attendanceSelect.required = false;
+            lookupStatus.textContent = '';
+        });
+
+        // Handle the RSVP form submission
+        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = guestNameInput.value.trim().replace(/\s+/g, ' ');
+            const attendance = attendanceSelect.value;
+            
+            // Update an existing response in place, or create one for a first-time guest.
+            const rsvpData = {
+                name: name,
+                attendance: attendance,
+                timestamp: new Date().toISOString()
+            };
+            const saveRsvp = existingRsvpKey
+                ? update(ref(database, `rsvps/${existingRsvpKey}`), rsvpData)
+                : push(ref(database, 'rsvps'), rsvpData);
+
+            saveRsvp.then(() => {
+                alert(existingRsvpKey ? 'Your RSVP has been updated.' : 'Thank you! Your RSVP has been submitted successfully.');
+                document.getElementById('rsvpForm').reset();
+                existingRsvpKey = null;
+                responseFields.classList.remove('active');
+                attendanceSelect.required = false;
+                lookupStatus.textContent = '';
+                document.getElementById('rsvpFormWrapper').classList.remove('active');
+            }).catch((error) => {
+                console.error('Error adding RSVP: ', error);
+                alert('An error occurred while submitting. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

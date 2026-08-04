@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Responses - Isabel & Dylan</title>
+
+    <!-- Link to local normalize CSS -->
+    <link rel="stylesheet" href="./styles/normalize.css">
+
+    <!-- Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #faf9f6;
+            color: #1a1a1a;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-script {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            font-weight: 400;
+            margin: 1rem 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            padding: 2rem;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        td {
+            font-size: 0.9rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-accept {
+            color: #2e7d32;
+            font-weight: 500;
+        }
+
+        .status-decline {
+            color: #c62828;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+        
+        .back-link {
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #1a1a1a;
+            text-decoration: none;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 2px;
+        }
+
+        .back-link:hover {
+            color: #666;
+            border-bottom-color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="header-script">Guest List</h1>
+    <div class="subtitle">RSVP Responses for Isabel & Dylan</div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Status</th>
+                    <th>Date Submitted</th>
+                </tr>
+            </thead>
+            <tbody id="rsvp-table-body">
+                <tr>
+                    <td colspan="3" class="empty-state">Loading responses...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a href="index.html" class="back-link">Return to Website</a>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBc1QYGCP32gg55aopGN8FqX3xTWNhm4j4",
+            authDomain: "june-suprise.firebaseapp.com",
+            databaseURL: "https://june-suprise-default-rtdb.firebaseio.com",
+            projectId: "june-suprise",
+            storageBucket: "june-suprise.firebasestorage.app",
+            messagingSenderId: "954185591739",
+            appId: "1:954185591739:web:80a35c00ce0254c77c729e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const rsvpRef = ref(database, 'rsvps');
+
+        // onValue sets up a real-time listener so the table updates automatically 
+        // whenever a new RSVP is submitted on the main site
+        onValue(rsvpRef, (snapshot) => {
+            const data = snapshot.val();
+            const tableBody = document.getElementById('rsvp-table-body');
+            
+            tableBody.innerHTML = ''; // Clear the loading text or previous entries
+
+            if (data) {
+                // Convert the object of objects into an array to easily iterate and display
+                const rsvps = Object.values(data);
+                
+                // Optional: sort by newest first based on timestamp
+                rsvps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                rsvps.forEach(rsvp => {
+                    const row = document.createElement('tr');
+                    
+                    // Format the timestamp nicely
+                    const dateObj = new Date(rsvp.timestamp);
+                    const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                    });
+
+                    // Add CSS class based on attendance for slight color coding
+                    const statusClass = rsvp.attendance === 'Joyfully Accepts' ? 'status-accept' : 
+                                        (rsvp.attendance === 'Regretfully Declines' ? 'status-decline' : '');
+
+                    row.innerHTML = `
+                        <td>${escapeHTML(rsvp.name)}</td>
+                        <td class="${statusClass}">${escapeHTML(rsvp.attendance)}</td>
+                        <td>${formattedDate}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="empty-state">No RSVPs have been submitted yet.</td>
+                    </tr>
+                `;
+            }
+        });
+
+        // Basic HTML escaping function to prevent XSS if guests enter weird characters
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+    </script>
+</body>
+</html>
