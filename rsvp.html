@@ -400,7 +400,7 @@
                         return;
                     }
                     const key = push(invitationsRef).key;
-                    updates[`invitations/${key}`] = {
+                    updates[key] = {
                         name: invitation.name,
                         normalizedName: normalizeName(invitation.name),
                         partySize: invitation.partySize,
@@ -409,7 +409,7 @@
                 });
 
                 const added = Object.keys(updates).length;
-                if (added) await update(ref(database), updates);
+                if (added) await update(invitationsRef, updates);
 
                 status.textContent = `${added} ${added === 1 ? 'invitation' : 'invitations'} added.${duplicates.length ? ` Duplicate entries skipped: ${[...new Set(duplicates)].join(', ')}.` : ''}`;
                 status.className = `form-status ${added ? 'success' : 'error'}`;

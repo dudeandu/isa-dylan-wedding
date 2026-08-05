@@ -4,8 +4,8 @@
     ".write": false,
     "invitations": {
       ".read": true,
+      ".write": true,
       "$invitationId": {
-        ".write": "newData.exists()",
         ".validate": "newData.hasChildren(['name', 'normalizedName', 'partySize', 'addedAt'])",
         "name": {
           ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
@@ -26,9 +26,9 @@
     },
     "rsvps": {
       ".read": true,
+      ".write": true,
       "$rsvpId": {
-        ".write": "newData.exists()",
-        ".validate": "newData.hasChildren(['name', 'partySize', 'guests', 'timestamp']) && newData.child('guests').numChildren() === newData.child('partySize').val()",
+        ".validate": "newData.hasChildren(['name', 'partySize', 'guests', 'timestamp'])",
         "name": {
           ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 100"
         },
