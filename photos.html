@@ -15,18 +15,39 @@
         nav ul { display: flex; justify-content: center; gap: 2rem; margin: 0 1rem 3rem; padding: 0; list-style: none; flex-wrap: wrap; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
         nav a { color: #666; text-decoration: none; padding-bottom: 2px; }
         nav a.active, nav a:hover { color: #000; border-bottom: 1px solid #000; }
-        .photo-collage { width: min(860px, calc(100% - 3rem)); margin: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
-        figure { margin: 0; aspect-ratio: 3 / 4; overflow: hidden; background: #eee9e1; }
-        figure img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 0.7s ease; }
+        .photo-collage { width: min(1120px, calc(100% - 3rem)); margin: auto; display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 72px; grid-auto-flow: dense; gap: 10px; }
+        figure { min-width: 0; min-height: 0; margin: 0; overflow: hidden; background: #e8e4dc; }
+        figure img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 0.55s ease; }
         figure:hover img { transform: scale(1.025); }
-        .portrait img { object-position: center 35%; }
-        .wide img { object-position: center; }
+        figure:nth-child(1)  { grid-column: span 5; grid-row: span 7; }
+        figure:nth-child(2)  { grid-column: span 3; grid-row: span 4; }
+        figure:nth-child(3)  { grid-column: span 4; grid-row: span 6; }
+        figure:nth-child(4)  { grid-column: span 3; grid-row: span 5; }
+        figure:nth-child(5)  { grid-column: span 4; grid-row: span 4; }
+        figure:nth-child(6)  { grid-column: span 5; grid-row: span 7; }
+        figure:nth-child(7)  { grid-column: span 4; grid-row: span 5; }
+        figure:nth-child(8)  { grid-column: span 4; grid-row: span 6; }
+        figure:nth-child(9)  { grid-column: span 4; grid-row: span 5; }
+        figure:nth-child(10) { grid-column: span 5; grid-row: span 7; }
+        figure:nth-child(11) { grid-column: span 3; grid-row: span 4; }
+        figure:nth-child(12) { grid-column: span 4; grid-row: span 5; }
+        figure:nth-child(13) { grid-column: span 4; grid-row: span 5; }
+        figure:nth-child(14) { grid-column: span 4; grid-row: span 4; }
+        figure:nth-child(15) { grid-column: span 4; grid-row: span 6; }
         .caption { margin: 1.3rem auto 0; color: #777; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; }
         @media (max-width: 520px) {
             body { padding-top: 1rem; }
             .header-script { font-size: 3.4rem; }
             nav ul { gap: 1.5rem; margin-bottom: 2rem; }
-            .photo-collage { width: calc(100% - 2rem); grid-template-columns: 1fr; gap: 10px; }
+            .photo-collage { width: calc(100% - 1rem); grid-template-columns: repeat(4, 1fr); grid-auto-rows: 64px; gap: 6px; }
+            .photo-collage figure { grid-column: span 2; grid-row: span 4; }
+            .photo-collage figure:nth-child(1),
+            .photo-collage figure:nth-child(6),
+            .photo-collage figure:nth-child(10),
+            .photo-collage figure:nth-child(15) { grid-column: span 4; grid-row: span 6; }
+            .photo-collage figure:nth-child(3),
+            .photo-collage figure:nth-child(8),
+            .photo-collage figure:nth-child(12) { grid-row: span 5; }
         }
     </style>
 </head>
@@ -43,11 +64,21 @@
         </ul>
     </nav>
     <main class="photo-collage" aria-label="Photos of Isabel and Dylan">
-        <figure class="portrait"><img src="./images/WhatsApp Image 2026-08-04 at 19.22.37.jpeg" alt="Isabel and Dylan smiling together"></figure>
-        <figure class="wide"><img src="./images/isaDylan.jpeg" alt="A close-up portrait of Isabel and Dylan"></figure>
-        <!-- <figure class="polaroid-one"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.01.jpeg" alt="Two instant photos of Isabel and Dylan"></figure> -->
-        <!-- <figure class="polaroid-two"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.00.jpeg" alt="An instant photo of Isabel and Dylan"></figure> -->
-        <!-- <figure class="polaroid-three"><img src="./images/WhatsApp Image 2026-08-04 at 19.24.02.jpeg" alt="A second instant photo of Isabel and Dylan"></figure> -->
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 19.22.37.jpeg" alt="Isabel and Dylan smiling together at home"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.40.jpeg" alt="Isabel and Dylan in their soccer shirts"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.44 (1).jpeg" alt="Isabel and Dylan ice skating beneath a Canadian flag"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.45.jpeg" alt="Isabel and Dylan laughing in colourful costumes"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.42 (1).jpeg" alt="Isabel and Dylan dressed up at a gathering"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 19.24.00.jpeg" alt="An instant photo of Isabel and Dylan"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.45 (1).jpeg" alt="Isabel and Dylan together after a bike ride"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.46 (1).jpeg" alt="Isabel and Dylan celebrating with a soccer trophy"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.42.jpeg" alt="Isabel and Dylan at a birthday celebration"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.44.jpeg" alt="Isabel and Dylan beside the water under a dramatic sky"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.40 (1).jpeg" alt="Isabel and Dylan bundled up together outdoors"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.46.jpeg" alt="Isabel and Dylan at a soccer match"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.44 (2).jpeg" alt="Isabel and Dylan dressed up at a birthday party"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 22.40.45 (2).jpeg" alt="A sunny selfie of Isabel and Dylan"></figure>
+        <figure><img src="./images/photopage/WhatsApp Image 2026-08-04 at 19.24.02.jpeg" alt="A second instant photo of Isabel and Dylan"></figure>
     </main>
     <p class="caption">A few moments along the way</p>
 </body>
