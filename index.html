@@ -82,6 +82,11 @@
             display: block;
         }
 
+        body.rsvp-view .hero-image { display: none; }
+        body.rsvp-view .date-location-container { display: none; }
+        body.rsvp-view .rsvp-container > .btn-black { display: none; }
+        body.rsvp-view #rsvpFormWrapper { margin-top: 0; }
+
         .date-location-container {
             display: flex;
             justify-content: center;
@@ -247,13 +252,12 @@
 
     <nav>
         <ul>
-            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#" class="active" id="homeNavLink">Home</a></li>
             <!-- <li><a href="#">Registry</a></li> -->
             <li><a href="photos.html">Photos</a></li>
-            <li><a href="#">Q + A</a></li>
-            <li><a href="#">Travel</a></li>
-            <li><a href="#">Dress Code</a></li>
-            <li><a href="#rsvp" onclick="toggleRSVP(event)">RSVP</a></li>
+            <li><a href="travel.html">Travel</a></li>
+            <li><a href="dress-code.html">Dress Code</a></li>
+            <li><a href="#rsvp" id="rsvpNavLink">RSVP</a></li>
         </ul>
     </nav>
 
@@ -374,6 +378,25 @@
             const wrapper = document.getElementById('rsvpFormWrapper');
             wrapper.classList.toggle('active');
         };
+
+        document.getElementById('rsvpNavLink').addEventListener('click', (event) => {
+            event.preventDefault();
+            if (window.location.hash === '#rsvp') openRsvpFromLink();
+            else window.location.hash = 'rsvp';
+        });
+
+        function openRsvpFromLink() {
+            const isRsvpView = window.location.hash === '#rsvp';
+            document.body.classList.toggle('rsvp-view', isRsvpView);
+            document.getElementById('rsvpNavLink').classList.toggle('active', isRsvpView);
+            document.getElementById('homeNavLink').classList.toggle('active', !isRsvpView);
+            if (!isRsvpView) return;
+            document.getElementById('rsvpFormWrapper').classList.add('active');
+            document.getElementById('rsvp').scrollIntoView({ block: 'start' });
+        }
+
+        openRsvpFromLink();
+        window.addEventListener('hashchange', openRsvpFromLink);
 
         async function findRsvp() {
             const name = guestNameInput.value.trim().replace(/\s+/g, ' ');
