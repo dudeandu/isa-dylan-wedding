@@ -15,11 +15,23 @@
         nav ul { display: flex; justify-content: center; gap: 2rem; margin: 0 1rem 3rem; padding: 0; list-style: none; flex-wrap: wrap; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
         nav a { color: #666; text-decoration: none; padding-bottom: 2px; }
         nav a.active, nav a:hover { color: #000; border-bottom: 1px solid #000; }
-        .venue { width: min(800px, calc(100% - 2rem)); margin: auto; }
+        .venue { width: min(900px, calc(100% - 2rem)); margin: auto; }
         .address { margin: 0 0 1.5rem; font-size: 0.8rem; letter-spacing: 0.12em; line-height: 1.9; text-transform: uppercase; }
         .address a { color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #999; padding-bottom: 2px; }
+        .parking-note { margin: 0 0 1.5rem; padding: 1rem 1.25rem; background: #f0ece5; font-size: 0.78rem; line-height: 1.7; }
+        .parking-note a { color: inherit; text-underline-offset: 3px; }
         .map-frame { width: 100%; height: 480px; display: block; border: 1px solid #e0ddd7; filter: grayscale(18%); }
-        @media (max-width: 520px) { body { padding-top: 1rem; } .header-script { font-size: 3.4rem; } nav ul { gap: 1.3rem; margin-bottom: 2rem; } .map-frame { height: 420px; } }
+        .accommodations { margin-top: 4rem; }
+        .section-heading { margin: 0; font-family: 'Great Vibes', cursive; font-size: 3rem; font-weight: 400; }
+        .section-intro { max-width: 620px; margin: 0.75rem auto 2rem; color: #666; font-size: 0.76rem; line-height: 1.7; }
+        .hotel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; text-align: left; }
+        .hotel-card { padding: 1.5rem; background: #fff; border: 1px solid #e5e1da; }
+        .hotel-card h3 { margin: 0 0 0.55rem; font-size: 0.9rem; font-weight: 500; line-height: 1.45; }
+        .drive-time { margin: 0 0 0.75rem; color: #665b4e; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+        .hotel-address { margin: 0 0 1.25rem; color: #666; font-size: 0.72rem; line-height: 1.6; }
+        .hotel-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .hotel-links a { color: #1a1a1a; font-size: 0.66rem; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; border-bottom: 1px solid #999; padding-bottom: 2px; }
+        @media (max-width: 600px) { body { padding-top: 1rem; } .header-script { font-size: 3.4rem; } nav ul { gap: 1.3rem; margin-bottom: 2rem; } .map-frame { height: 420px; } .hotel-grid { grid-template-columns: 1fr; } .accommodations { margin-top: 3rem; } }
     </style>
 </head>
 <body>
@@ -38,7 +50,51 @@
         <p class="address">
             <a href="https://www.google.com/maps/dir/?api=1&amp;destination=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8" target="_blank" rel="noopener noreferrer">99 Barton Street<br>Milton, ON L9T 1C8</a>
         </p>
+        <p class="parking-note">Street parking is available until 2 a.m. Please request a <a href="https://exceptions.milton.ca/userportal/visitorpass/index.xhtml" target="_blank" rel="noopener noreferrer">Town of Milton parking exception</a> if you will be parked between 2 and 6 a.m. or for more than five hours.</p>
         <iframe class="map-frame" title="Map showing 99 Barton Street, Milton, Ontario" src="https://www.google.com/maps?q=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+
+        <section class="accommodations" aria-labelledby="accommodations-title">
+            <h2 class="section-heading" id="accommodations-title">Accommodations</h2>
+            <p class="section-intro">Nearby stays in Milton, listed by approximate driving time from the wedding. Travel times may vary with traffic.</p>
+            <div class="hotel-grid">
+                <article class="hotel-card">
+                    <h3>Best Western Milton</h3>
+                    <p class="drive-time">About a 5-minute drive</p>
+                    <p class="hotel-address">161 Chisholm Drive, Milton</p>
+                    <div class="hotel-links">
+                        <a href="https://www.bestwestern.com/en_US/book/milton/hotel-rooms/best-western-milton/propertyCode.66101.html" target="_blank" rel="noopener noreferrer">Hotel website</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;origin=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8&amp;destination=Best+Western+Milton%2C+161+Chisholm+Drive%2C+Milton%2C+ON" target="_blank" rel="noopener noreferrer">Directions</a>
+                    </div>
+                </article>
+                <article class="hotel-card">
+                    <h3>Holiday Inn Express &amp; Suites Milton</h3>
+                    <p class="drive-time">About a 10-minute drive</p>
+                    <p class="hotel-address">2750 High Point Drive, Milton</p>
+                    <div class="hotel-links">
+                        <a href="https://www.ihg.com/holidayinnexpress/hotels/us/en/milton/ymzhp/hoteldetail" target="_blank" rel="noopener noreferrer">Hotel website</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;origin=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8&amp;destination=Holiday+Inn+Express+%26+Suites+Milton%2C+2750+High+Point+Drive%2C+Milton%2C+ON" target="_blank" rel="noopener noreferrer">Directions</a>
+                    </div>
+                </article>
+                <article class="hotel-card">
+                    <h3>Home2 Suites by Hilton Milton Ontario</h3>
+                    <p class="drive-time">About a 10-minute drive</p>
+                    <p class="hotel-address">8490 Parkhill Drive, Milton</p>
+                    <div class="hotel-links">
+                        <a href="https://www.hilton.com/en/hotels/yyzmiht-home2-suites-milton-ontario/" target="_blank" rel="noopener noreferrer">Hotel website</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;origin=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8&amp;destination=Home2+Suites+by+Hilton+Milton+Ontario%2C+8490+Parkhill+Drive%2C+Milton%2C+ON" target="_blank" rel="noopener noreferrer">Directions</a>
+                    </div>
+                </article>
+                <article class="hotel-card">
+                    <h3>Tru by Hilton Milton</h3>
+                    <p class="drive-time">About a 10-minute drive</p>
+                    <p class="hotel-address">Milton, Ontario</p>
+                    <div class="hotel-links">
+                        <a href="https://www.hilton.com/en/hotels/yyzomru-tru-milton/" target="_blank" rel="noopener noreferrer">Hotel website</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;origin=99+Barton+Street%2C+Milton%2C+ON+L9T+1C8&amp;destination=Tru+by+Hilton+Milton%2C+Ontario" target="_blank" rel="noopener noreferrer">Directions</a>
+                    </div>
+                </article>
+            </div>
+        </section>
     </main>
 </body>
 </html>
