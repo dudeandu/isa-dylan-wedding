@@ -21,9 +21,10 @@
         .venue-details p { margin: 0.4rem 0; }
         .text-link { color: #1a1a1a; text-underline-offset: 4px; }
         .timeline { margin: 2.5rem 0; padding: 0; list-style: none; text-align: left; }
-        .timeline li { display: grid; grid-template-columns: 115px 1fr; align-items: baseline; gap: 1.5rem; padding: 1.2rem 1.5rem; border-bottom: 1px solid #e5e1da; }
+        .timeline li { display: grid; grid-template-columns: 115px 48px 1fr; align-items: center; gap: 1.5rem; padding: 1.2rem 1.5rem; border-bottom: 1px solid #e5e1da; }
         .timeline li:first-child { border-top: 1px solid #e5e1da; }
         .timeline time { color: #665b4e; font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
+        .timeline-icon { display: block; width: 48px; height: 48px; object-fit: contain; mix-blend-mode: multiply; }
         .timeline h3 { margin: 0; font-size: 0.85rem; font-weight: 400; letter-spacing: 0.06em; line-height: 1.6; text-transform: uppercase; }
         .dietary-note { margin: 0 0 2rem; padding: 1rem 1.25rem; background: #f0ece5; font-size: 0.78rem; line-height: 1.8; }
         .pdf-link { display: inline-block; padding: 0.9rem 1.4rem; background: #1a1a1a; color: #fff; font-size: 0.7rem; letter-spacing: 0.1em; line-height: 1.6; text-decoration: none; text-transform: uppercase; }
@@ -34,7 +35,8 @@
             body { padding-top: 1rem; }
             .header-script { font-size: 3.4rem; }
             nav ul { gap: 1rem 1.3rem; margin-bottom: 2rem; }
-            .timeline li { grid-template-columns: 90px 1fr; gap: 1rem; padding: 1.1rem 0.5rem; }
+            .timeline li { grid-template-columns: 76px 36px 1fr; gap: 0.75rem; padding: 1.1rem 0.5rem; }
+            .timeline-icon { width: 36px; height: 42px; }
             .timeline h3 { font-size: 0.78rem; }
         }
     </style>
@@ -60,17 +62,17 @@
             <p><a class="text-link" href="travel.html">Directions &amp; parking details</a></p>
         </div>
         <ol class="timeline" aria-label="Wedding day schedule">
-            <li><time datetime="2026-10-17T15:00">3:00 PM</time><h3>Guest arrival</h3></li>
-            <li><time datetime="2026-10-17T16:00">4:00 PM</time><h3>Wedding ceremony</h3></li>
-            <li><time datetime="2026-10-17T16:30">4:30 PM</time><h3>Cocktail hour</h3></li>
-            <li><time datetime="2026-10-17T17:30">5:30 PM</time><h3>Grand entrance</h3></li>
-            <li><time datetime="2026-10-17T18:00">6:00 PM</time><h3>Dinner</h3></li>
-            <li><time datetime="2026-10-17T19:30">7:30 PM</time><h3>Cake cutting</h3></li>
-            <li><time datetime="2026-10-17T20:00">8:00 PM</time><h3>First dance</h3></li>
-            <li><time datetime="2026-10-17T20:30">8:30 PM</time><h3>Dance party</h3></li>
-            <li><time datetime="2026-10-17T22:30">10:30 PM</time><h3>Late night snack</h3></li>
-            <li><time datetime="2026-10-17T23:30">11:30 PM</time><h3>Last call</h3></li>
-            <li><time datetime="2026-10-18T00:00">12:00 AM</time><h3>After party</h3></li>
+            <li><time datetime="2026-10-17T15:00">3:00 PM</time><img class="timeline-icon" src="images/itinerary/icons/guest-arrival.png" alt="" width="48" height="48"><h3>Guest arrival</h3></li>
+            <li><time datetime="2026-10-17T16:00">4:00 PM</time><img class="timeline-icon" src="images/itinerary/icons/wedding-ceremony.png" alt="" width="48" height="48"><h3>Wedding ceremony</h3></li>
+            <li><time datetime="2026-10-17T16:30">4:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/cocktail-hour.png" alt="" width="48" height="48"><h3>Cocktail hour</h3></li>
+            <li><time datetime="2026-10-17T17:30">5:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/grand-entrance.png" alt="" width="48" height="48"><h3>Grand entrance</h3></li>
+            <li><time datetime="2026-10-17T18:00">6:00 PM</time><img class="timeline-icon" src="images/itinerary/icons/dinner.png" alt="" width="48" height="48"><h3>Dinner</h3></li>
+            <li><time datetime="2026-10-17T19:30">7:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/cake-cutting.png" alt="" width="48" height="48"><h3>Cake cutting</h3></li>
+            <li><time datetime="2026-10-17T20:00">8:00 PM</time><img class="timeline-icon" src="images/itinerary/icons/first-dance.png" alt="" width="48" height="48"><h3>First dance</h3></li>
+            <li><time datetime="2026-10-17T20:30">8:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/dance-party.png" alt="" width="48" height="48"><h3>Dance party</h3></li>
+            <li><time datetime="2026-10-17T22:30">10:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/late-night-snack.png" alt="" width="48" height="48"><h3>Late night snack</h3></li>
+            <li><time datetime="2026-10-17T23:30">11:30 PM</time><img class="timeline-icon" src="images/itinerary/icons/last-call.png" alt="" width="48" height="48"><h3>Last call</h3></li>
+            <li><time datetime="2026-10-18T00:00">12:00 AM</time><img class="timeline-icon" src="images/itinerary/icons/after-party.png" alt="" width="48" height="48"><h3>After party</h3></li>
         </ol>
         <p class="dietary-note">Please share any dietary restrictions you may have with Isabel and Dylan.</p>
         <a class="pdf-link" href="images/itinerary/Isabel%20%26%20Dylan%20Wedding%20Itinerary.pdf" download>Download itinerary (PDF)</a>
