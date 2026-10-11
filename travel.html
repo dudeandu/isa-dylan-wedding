@@ -16,10 +16,21 @@
         nav a { color: #666; text-decoration: none; padding-bottom: 2px; }
         nav a.active, nav a:hover { color: #000; border-bottom: 1px solid #000; }
         .venue { width: min(900px, calc(100% - 2rem)); margin: auto; }
-        .address { margin: 0 0 1rem; font-size: 0.8rem; letter-spacing: 0.12em; line-height: 1.9; text-transform: uppercase; }
+        .address { margin: 1rem 0 1.5rem; font-size: 0.8rem; letter-spacing: 0.12em; line-height: 1.9; text-transform: uppercase; }
         .address a { color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #999; padding-bottom: 2px; }
-        .parking-note { margin: 0 0 1.5rem; padding: 1rem 1.25rem; background: #f0ece5; font-size: 0.78rem; line-height: 1.7; }
-        .map-frame { width: 100%; height: 480px; display: block; border: 1px solid #e0ddd7; filter: grayscale(18%); }
+        .parking-note { margin: 0 0 1.5rem; padding: 1rem 1.25rem; background: #f0ece5; font-size: 0.85rem; line-height: 1.8; }
+        .parking-note p { margin: 0; }
+        .parking-note p + p { margin-top: 0.5rem; }
+        .arrival-directions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin: 0 0 1.5rem; text-align: left; }
+        .arrival-directions section { padding: 1.5rem; background: #fff; border: 1px solid #e5e1da; }
+        .arrival-directions h3 { margin: 0 0 1rem; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+        .arrival-directions ol { margin: 0; padding-left: 1.25rem; font-size: 0.85rem; line-height: 1.8; }
+        .arrival-directions li + li { margin-top: 0.65rem; }
+        .gps-note { margin: 1.25rem 0 0; padding-top: 1rem; border-top: 1px solid #e5e1da; font-size: 0.85rem; line-height: 1.8; }
+        .map-frame { box-sizing: border-box; width: 100%; height: 480px; display: block; border: 1px solid #e0ddd7; }
+        .map-link { margin: 0.85rem 0 0; font-size: 0.75rem; }
+        .map-link a { color: #1a1a1a; text-underline-offset: 4px; }
+        a:focus-visible { outline: 2px solid #665b4e; outline-offset: 5px; }
         .accommodations { margin-top: 4rem; }
         .section-heading { margin: 0; font-family: 'Great Vibes', cursive; font-size: 3rem; font-weight: 400; }
         .section-intro { max-width: 620px; margin: 0.75rem auto 2rem; color: #666; font-size: 0.76rem; line-height: 1.7; }
@@ -30,28 +41,58 @@
         .hotel-address { margin: 0 0 1.25rem; color: #666; font-size: 0.72rem; line-height: 1.6; }
         .hotel-links { display: flex; gap: 1rem; flex-wrap: wrap; }
         .hotel-links a { color: #1a1a1a; font-size: 0.66rem; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; border-bottom: 1px solid #999; padding-bottom: 2px; }
-        @media (max-width: 600px) { body { padding-top: 1rem; } .header-script { font-size: 3.4rem; } nav ul { gap: 1.3rem; margin-bottom: 2rem; } .map-frame { height: 420px; } .hotel-grid { grid-template-columns: 1fr; } .accommodations { margin-top: 3rem; } }
+        @media (max-width: 600px) { body { padding-top: 1rem; } .header-script { font-size: 3.4rem; } nav ul { gap: 1.3rem; margin-bottom: 2rem; } .map-frame { height: 420px; } .arrival-directions, .hotel-grid { grid-template-columns: 1fr; } .arrival-directions section { padding: 1.25rem; } .accommodations { margin-top: 3rem; } }
     </style>
 </head>
 <body>
     <h1 class="header-script">Travel</h1>
-    <p class="subtitle">Wedding location</p>
-    <nav>
+    <p class="subtitle">Parking &amp; accommodations</p>
+    <nav aria-label="Main navigation">
         <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="photos.html">Photos</a></li>
             <li><a href="itinerary.html">Itinerary</a></li>
-            <li><a href="travel.html" class="active">Travel</a></li>
+            <li><a href="travel.html" class="active" aria-current="page">Travel</a></li>
             <li><a href="dress-code.html">Dress Code</a></li>
             <li><a href="index.html#rsvp">RSVP</a></li>
         </ul>
     </nav>
     <main class="venue">
-        <p class="address">
-            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=300+City+Centre+Drive%2C+Mississauga%2C+ON+L5B+3C1" target="_blank" rel="noopener noreferrer">300 City Centre Drive, 12th Floor<br>Mississauga, ON L5B 3C1</a>
-        </p>
-        <p class="parking-note">Complimentary parking is available for wedding guests. Underground parking is available at the Civic Centre; enter from Duke of York Boulevard, then follow the parking elevators to the ground floor and use the tower elevators to the 12th floor.</p>
-        <iframe class="map-frame" title="Map showing 300 City Centre Drive, Mississauga, Ontario" src="https://www.google.com/maps?q=300+City+Centre+Drive%2C+Mississauga%2C+ON+L5B+3C1&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <section aria-labelledby="parking-title">
+            <h2 class="section-heading" id="parking-title">Parking Information</h2>
+            <p class="address">
+                C Banquets &middot; Mississauga Civic Centre (City Hall)<br>
+                300 City Centre Drive, 12th Floor (Tower Elevators)<br>
+                Mississauga, Ontario L5B 3C1
+            </p>
+            <div class="parking-note">
+                <p><strong>Complimentary parking is available after 6:00 PM and on weekends.</strong></p>
+                <p>Weekday onsite parking is $1.00 per hour, to a maximum of $6.00 per day. Parking meter access begins at 7:00 AM.</p>
+            </div>
+            <div class="arrival-directions">
+                <section aria-labelledby="driving-title">
+                    <h3 id="driving-title">If driving</h3>
+                    <ol>
+                        <li>Enter the North Parking lot or Celebration Square lot from Duke of York Boulevard.</li>
+                        <li>Park on level P1 or P2.</li>
+                        <li>Enter the Civic Centre building through the blue doors marked &ldquo;To Civic Centre Elevators.&rdquo;</li>
+                        <li>Take the &ldquo;Parking Garage Elevators&rdquo; to the Ground Floor of the Civic Centre.</li>
+                        <li>Follow signs to the &ldquo;Tower Elevators&rdquo; on the Ground Floor.</li>
+                        <li>Take the &ldquo;Tower Elevators&rdquo; to the 12th Floor for C Banquets.</li>
+                    </ol>
+                    <p class="gps-note"><strong>For GPS navigation:</strong> Enter &ldquo;Mississauga Civic Centre Underground Parking&rdquo; instead of C Banquets or 300 City Centre Drive to reach the underground parking lot.</p>
+                </section>
+                <section aria-labelledby="walking-title">
+                    <h3 id="walking-title">If walking</h3>
+                    <ol>
+                        <li>Enter the Civic Centre building (City Hall) through the West Entrance, facing Living Arts Drive.</li>
+                        <li>Take the &ldquo;Tower Elevators&rdquo; to the 12th Floor for C Banquets.</li>
+                    </ol>
+                </section>
+            </div>
+            <iframe class="map-frame" title="Parking map for C Banquets at Mississauga Civic Centre" src="https://www.google.com/maps/d/u/0/embed?mid=1TrStEkQiGPU1zeQGhp7OGyayBwE0XI4&amp;ehbc=2E312F&amp;noprof=1" width="640" height="480" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            <p class="map-link"><a href="https://www.google.com/maps/d/u/0/viewer?mid=1TrStEkQiGPU1zeQGhp7OGyayBwE0XI4" target="_blank" rel="noopener noreferrer">Open parking map in a new tab</a></p>
+        </section>
 
         <section class="accommodations" aria-labelledby="accommodations-title">
             <h2 class="section-heading" id="accommodations-title">Accommodations</h2>
